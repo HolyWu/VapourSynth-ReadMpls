@@ -18,24 +18,25 @@
 #include <string>
 
 #include <VapourSynth4.h>
-#include <VSHelper4.h>
 
 #include <libbluray/bluray.h>
 
-using namespace std::literals;
+using namespace std::string_literals;
 
-static void VS_CC readMplsCreate(const VSMap* in, VSMap* out, [[maybe_unused]] void* userData, [[maybe_unused]] VSCore* core, const VSAPI* vsapi) {
-    auto err{ 0 };
+namespace {
 
-    auto bd_path{ vsapi->mapGetData(in, "bd_path", 0, nullptr) };
-    auto playlist{ vsapi->mapGetIntSaturated(in, "playlist", 0, nullptr) };
-    auto angle{ vsapi->mapGetIntSaturated(in, "angle", 0, &err) };
+void VS_CC readmplsCreate(const VSMap* in, VSMap* out, [[maybe_unused]] void* userData, [[maybe_unused]] VSCore* core, const VSAPI* vsapi) noexcept {
+    int err = 0;
 
-    auto bd{ bd_open(bd_path, nullptr) };
+    const char* bd_path = vsapi->mapGetData(in, "bd_path", 0, nullptr);
+    const unsigned playlist = vsapi->mapGetIntSaturated(in, "playlist", 0, nullptr);
+    const unsigned angle = vsapi->mapGetIntSaturated(in, "angle", 0, &err);
+
+    auto bd = bd_open(bd_path, nullptr);
     if (!bd)
         return vsapi->mapSetError(out, ("ReadMpls: failed to open "s + bd_path).c_str());
 
-    auto titleInfo{ bd_get_playlist_info(bd, playlist, angle) };
+    auto titleInfo = bd_get_playlist_info(bd, playlist, angle);
     if (!titleInfo) {
         vsapi->mapSetError(out, "ReadMpls: failed to get information of the specified playlist or angle");
         bd_close(bd);
@@ -43,8 +44,8 @@ static void VS_CC readMplsCreate(const VSMap* in, VSMap* out, [[maybe_unused]] v
     }
 
     vsapi->mapSetInt(out, "count", titleInfo->clip_count, maReplace);
-    for (auto i{ 0U }; i < titleInfo->clip_count; i++) {
-        auto filename{ titleInfo->clips[i].clip_id + ".m2ts"s };
+    for (unsigned i = 0; i < titleInfo->clip_count; i++) {
+        const std::string filename = titleInfo->clips[i].clip_id + ".m2ts"s;
         vsapi->mapSetData(out, "clip", (bd_path + "/BDMV/STREAM/"s + filename).c_str(), -1, dtUtf8, maAppend);
         vsapi->mapSetData(out, "filename", filename.c_str(), -1, dtUtf8, maAppend);
     }
@@ -57,17 +58,16 @@ static void VS_CC readMplsCreate(const VSMap* in, VSMap* out, [[maybe_unused]] v
     bd_close(bd);
 }
 
-//////////////////////////////////////////
-// Init
+}  // namespace
 
 VS_EXTERNAL_API(void) VapourSynthPluginInit2(VSPlugin* plugin, const VSPLUGINAPI* vspapi) {
-    vspapi->configPlugin("com.holywu.readmpls", "mpls", "Get m2ts clip id from a playlist and return a dict", VS_MAKE_VERSION(5, 0), VAPOURSYNTH_API_VERSION, 0, plugin);
-    vspapi->registerFunction("Read",
-                             "bd_path:data;"
-                             "playlist:int;"
-                             "angle:int:opt;",
-                             "count:int;"
-                             "clip:data;"
-                             "filename:data;",
-                             readMplsCreate, nullptr, plugin);
+    vspapi->configPlugin("com.holywu.readmpls",
+                         "mpls",
+                         "Get m2ts clip id from a playlist and return a dict",
+                         VS_MAKE_VERSION(5, 0),
+                         VAPOURSYNTH_API_VERSION,
+                         0,
+                         plugin);
+
+    vspapi->registerFunction("Read", "bd_path:data;playlist:int;angle:int:opt;", "count:int;clip:data;filename:data;", readmplsCreate, nullptr, plugin);
 }
