@@ -3,7 +3,7 @@ project('ReadMpls', 'cpp',
     license: 'LGPL-3.0-or-later',
     license_files: 'LICENSE',
     meson_version: '>=1.6.0',
-    version: '5',
+    version: '6.0',
 )
 
 py = import('python').find_installation(pure: false)

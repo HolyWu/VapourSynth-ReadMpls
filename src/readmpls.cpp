@@ -64,7 +64,7 @@ VS_EXTERNAL_API(void) VapourSynthPluginInit2(VSPlugin* plugin, const VSPLUGINAPI
     vspapi->configPlugin("com.holywu.readmpls",
                          "mpls",
                          "Get m2ts clip id from a playlist and return a dict",
-                         VS_MAKE_VERSION(5, 0),
+                         VS_MAKE_VERSION(6, 0),
                          VAPOURSYNTH_API_VERSION,
                          0,
                          plugin);
