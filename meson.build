@@ -12,7 +12,7 @@ libbluray_dep = dependency('libbluray')
 install_dir = vapoursynth_dep.get_variable(pkgconfig: 'libdir') / 'vapoursynth'
 
 sources = [
-  'ReadMpls/ReadMpls.cpp'
+  'src/readmpls.cpp'
 ]
 
 shared_module('readmpls', sources,
