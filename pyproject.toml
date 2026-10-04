@@ -1,0 +1,29 @@
+[build-system]
+requires = ["meson-python>=0.18.0", "VapourSynth>=74"]
+build-backend = "mesonpy"
+
+[project]
+name = "vapoursynth-readmpls"
+description = "Get m2ts clip id from a playlist and return a dict"
+readme = "README.md"
+requires-python = ">=3.12"
+keywords = ["vapoursynth", "readmpls"]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: Plugins",
+  "Natural Language :: English",
+  "Operating System :: MacOS",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX",
+  "Operating System :: Unix",
+  "Programming Language :: C++",
+]
+dependencies = ["VapourSynth>=74"]
+dynamic = ["license", "license-files", "version"]
+
+[project.urls]
+Repository = "https://github.com/HolyWu/VapourSynth-ReadMpls"
+Issues = "https://github.com/HolyWu/VapourSynth-ReadMpls/issues"
+
+[tool.meson-python.args]
+install = ["--tags=runtime"]

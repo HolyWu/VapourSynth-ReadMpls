@@ -6,17 +6,18 @@ project('ReadMpls', 'cpp',
     version: '5',
 )
 
-vapoursynth_dep = dependency('vapoursynth', version: '>=55').partial_dependency(compile_args: true, includes: true)
+py = import('python').find_installation(pure: false)
 
-libbluray_dep = dependency('libbluray')
-
-install_dir = vapoursynth_dep.get_variable(pkgconfig: 'libdir') / 'vapoursynth'
+incdir = include_directories(
+    run_command(py, '-c', 'import vapoursynth as vs; print(vs.get_include())', check: true).stdout().strip(),
+)
 
 shared_module('readmpls',
     files('src/readmpls.cpp'),
-    dependencies: [vapoursynth_dep, libbluray_dep],
+    dependencies: dependency('libbluray'),
     gnu_symbol_visibility: 'hidden',
+    include_directories: incdir,
     install: true,
-    install_dir: install_dir,
+    install_dir: py.get_install_dir() / 'vapoursynth/plugins',
     name_prefix: '',
 )

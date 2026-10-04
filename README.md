@@ -28,12 +28,8 @@ clip = core.std.Splice([core.bs.VideoSource(mpls['clip'][i]) for i in range(mpls
 ```
 
 
-## Compilation
-
-Requires `libbluray`.
+## Installation
 
 ```
-meson build
-ninja -C build
-ninja -C build install
+pip install -U vapoursynth-readmpls
 ```
