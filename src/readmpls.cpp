@@ -178,5 +178,5 @@ VS_EXTERNAL_API(void) VapourSynthPluginInit2(VSPlugin* plugin, const VSPLUGINAPI
                          0,
                          plugin);
 
-    vspapi->registerFunction("Read", "bd_path:data;playlist:int;angle:int:opt;", "count:int;clip:data;filename:data;", readmplsCreate, nullptr, plugin);
+    vspapi->registerFunction("Read", "bd_path:data;playlist:int;angle:int:opt;", "count:int;clip:data[];filename:data[];", readmplsCreate, nullptr, plugin);
 }
